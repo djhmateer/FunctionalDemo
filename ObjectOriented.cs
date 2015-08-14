@@ -18,8 +18,8 @@ namespace FunctionalDemo
         public static ReportingService Compose()
         {
             return new ReportingService(
-                new CustomerData(), 
-                new ReportBuilder(), 
+                new CustomerData(),
+                new ReportBuilder(),
                 new Emailer()
                 );
         }

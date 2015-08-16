@@ -17,6 +17,7 @@ namespace FunctionalDemo
     {
         public static ReportingService Compose()
         {
+            // Composition is usually far more complex
             return new ReportingService(
                 new CustomerData(),
                 new ReportBuilder(),
@@ -27,6 +28,7 @@ namespace FunctionalDemo
 
     public class ReportingService
     {
+        // Injecting dependencies as constructor argumnets - Pure DI
         public ReportingService(ICustomerData customerData, IReportBuilder reportBuilder, IEmailer emailer)
         {
             CustomerData = customerData;
@@ -34,6 +36,7 @@ namespace FunctionalDemo
             Emailer = emailer;
         }
 
+        // Store dependencies in Class Properties.. could be in Class Fields instead
         public ICustomerData CustomerData { get; private set; }
         public IReportBuilder ReportBuilder { get; private set; }
         public IEmailer Emailer { get; private set; }
@@ -66,6 +69,21 @@ namespace FunctionalDemo
         }
     }
 
+    public interface IReportBuilder
+    {
+        Report CreateCustomerReport(Customer customer);
+    }
+
+    public class ReportBuilder : IReportBuilder
+    {
+        public Report CreateCustomerReport(Customer customer)
+        {
+            // C#6 string interpolation
+            var body = $"This is the report for {customer.Email}!";
+            return new Report(customer.Email, body);
+        }
+    }
+
     public interface IEmailer
     {
         void Send(string toAddress, string body);
@@ -77,19 +95,6 @@ namespace FunctionalDemo
         {
             // pretend to send an email here
             Console.Out.WriteLine("Sent Email to: {0}, Body: '{1}'", toAddress, body);
-        }
-    }
-
-    public interface IReportBuilder
-    {
-        Report CreateCustomerReport(Customer customer);
-    }
-
-    public class ReportBuilder : IReportBuilder
-    {
-        public Report CreateCustomerReport(Customer customer)
-        {
-            return new Report(customer.Email, $"This is the report for {customer.Email}!");
         }
     }
 }

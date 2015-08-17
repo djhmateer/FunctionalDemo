@@ -94,7 +94,8 @@ namespace FunctionalDemo
         public void Send(string toAddress, string body)
         {
             // pretend to send an email here
-            Console.Out.WriteLine("Sent Email to: {0}, Body: '{1}'", toAddress, body);
+            //Console.Out.WriteLine("Sent Email to: {0}, Body: '{1}'", toAddress, body);
+            Console.WriteLine($"Sent Email to: {toAddress}, Body: '{body}'");
         }
     }
 }

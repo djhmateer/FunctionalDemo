@@ -43,6 +43,7 @@ namespace FunctionalDemo
             var expectedCustomer = new Customer("fist@sea.com");
             var expectedReportBody = "the report body";
 
+            // lambda expression for stub - just a simple customer
             Func<IEnumerable<Customer>> getCustomersForCustomerReport  = 
                 () => new[] {expectedCustomer};
 

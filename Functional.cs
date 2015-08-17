@@ -7,7 +7,7 @@ namespace FunctionalDemo
     {
         public static void Main()
         {
-            var runCustomerReportBatch = Compose();
+            Action runCustomerReportBatch = Compose();
 
             runCustomerReportBatch();
         }
@@ -20,6 +20,7 @@ namespace FunctionalDemo
                 SendEmail);
         }
 
+        // Dependencies are delegate arguments
         public static void RunCustomerReportBatch(
             Func<IEnumerable<Customer>> getCustomersForCustomerReport,
             Func<Customer, Report> createCustomerReport,

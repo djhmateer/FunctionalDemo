@@ -8,7 +8,6 @@ namespace FunctionalDemo
         public static void Main()
         {
             var reportingService = CompositionRoot.Compose();
-
             reportingService.RunCustomerReportBatch();
         }
     }

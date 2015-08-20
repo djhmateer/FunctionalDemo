@@ -43,7 +43,6 @@ namespace FunctionalDemo
             var expectedCustomer = new Customer("fist@sea.com");
             var expectedReportBody = "the report body";
 
-            // lambda expression for stub - just a simple customer
             Func<IEnumerable<Customer>> getCustomersForCustomerReport  = 
                 () => new[] {expectedCustomer};
 
@@ -62,7 +61,7 @@ namespace FunctionalDemo
             // act
             Functional.RunCustomerReportBatch(getCustomersForCustomerReport, createCustomerReport, sendEmail);
 
-            // assert
+            // asserting off sendEmail function
             Assert.Equal(expectedCustomer.Email, actualToAddress);
             Assert.Equal(expectedReportBody, actualBody);
         }

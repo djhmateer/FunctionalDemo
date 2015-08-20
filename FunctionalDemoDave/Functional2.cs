@@ -7,14 +7,14 @@ namespace FunctionalDemoDave
     {
         private static void Main()
         {
-            Action runProcessing = () => RunProcessing(Log, GetCustomers, CreateReport);
+            Action runProcessing = () => RunProcessing(Log, GetCustomers, CreateReport,SendEmail);
             runProcessing();
         }
 
-        public static void RunProcessing(
-            Action<string> log,
+        public static void RunProcessing(Action<string> log,
             Func<IEnumerable<string>> getCustomers,
-            Func<string, string> createReport)
+            Func<string, string> createReport,
+            Action<string, string> sendEmail)
         {
             log("test");
             var customers = getCustomers();
@@ -23,7 +23,18 @@ namespace FunctionalDemoDave
                 log(customer);
                 var report = createReport(customer);
                 log(report);
+                sendEmail("a@b.com", report);
             }
+        }
+
+        public static void SendEmail(string toAddress, string body)
+        {
+            Console.WriteLine("Sent Email to: {0}, Body: '{1}'", toAddress, body);
+        }
+
+        public static void Log(string message)
+        {
+            Console.WriteLine("log: {0}", message);
         }
 
         public static string CreateReport(string customerName)
@@ -36,11 +47,6 @@ namespace FunctionalDemoDave
             yield return "dave";
             yield return "bob";
             yield return "alice";
-        }
-
-        public static void Log(string message)
-        {
-            Console.WriteLine("log: {0}", message);
         }
     }
 }

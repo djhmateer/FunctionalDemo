@@ -8,47 +8,45 @@ namespace FunctionalDemoDave
     {
         // Testing the static functions which have no dependecies
         [Fact]
-        public void CreateReportShouldReturnCorrect()
+        public void CreateDaveReportShouldReturnDaveDone()
         {
             string result = Functional2.CreateReport("dave");
             Assert.Equal("dave done!", result);
         }
 
-        // The heart of the application..single function that has 3 dependencies 
-        // mocking out the dependencies
+        // Single function has 4 dependencies 
+        // mocking out the dependencies, and testing what this orchestration function
+        // does to it's dependencies
         [Fact]
         public void RunProcessingShouldSendCorrectEmailBody()
         {
-            // arrange
-            var expectedCustomer = "ellie";
-            var expectedReportBody = "ellie done!";
-
-            // mocking out RunProcessing's 3 dependencies
-            // Action is a delegate - doesn't return.  
-            // Pass in a function
+            // mocking out RunProcessing's 4 dependencies
+            // Action is a delegate which doesn't return a value
+            // Passing in an anonymous function
             Action<string> log = m => Console.WriteLine(m);
 
-            // Func input of a string, returns ellie done!  
-            Func<string, string> createReport = x => expectedReportBody;
+            // Func input of a string, delegating to anonymous function, returning ellie done!  
+            Func<string, string> createReport = x => "ellie done";
 
             // Func with no input, delegating to an anonymous function, 
             // returning an array of 1 string - ellie
-            Func<IEnumerable<string>> getCustomers = () => new[] { expectedCustomer };
+            Func<IEnumerable<string>> getCustomers = () => new[] { "ellie" };
 
             // Action is a delegate - doesn't return anything
-            // we're going to test whether RunProcessing sets the body to "ellie done"
-            var actualToAddress = "";
+            // we're going to test whether RunProcessing calls createReport
+            // which sets the body to "ellie done"
             var actualBody = "";
             Action<string, string> sendEmail = (toAddress, body) =>
             {
-                actualToAddress = toAddress;
                 actualBody = body;
             };
 
-            Functional2.RunProcessing(log, getCustomers, createReport, sendEmail);
-
-            // assert - test it runs the sendEmail function properly
-            Assert.Equal(expectedReportBody, actualBody);
+            // compose.  Action is a delegate - doesn't return anything
+            Action runProcessing = () => Functional2.RunProcessing(log, getCustomers, createReport, sendEmail);
+            // run
+            runProcessing();
+            // assert - testing if RunProcessing runs the sendEmail function properly
+            Assert.Equal("ellie done", actualBody);
         }
 
         [Fact]
@@ -74,6 +72,22 @@ namespace FunctionalDemoDave
             Assert.Equal("test", listOfLogEntries[0]);
             Assert.Equal("ellie", listOfLogEntries[1]);
             Assert.Equal("ellie report test", listOfLogEntries[2]);
+        }
+
+        [Fact]
+        public void RunProcessingShouldSendMultipleCorrectEmailBodies()
+        {
+            Action<string> log = m => Console.WriteLine(m);
+            Func<string, string> createReport = customer => customer + " done";
+            Func<IEnumerable<string>> getCustomers = () => new[] { "ellie", "bob" };
+
+            List<string> actualBodyList = new List<string>();
+            Action<string, string> sendEmail = (toAddress, body) => actualBodyList.Add(body);
+
+            Functional2.RunProcessing(log, getCustomers, createReport, sendEmail);
+
+            Assert.Equal("ellie done", actualBodyList[0]);
+            Assert.Equal("bob done", actualBodyList[1]);
         }
     }
 }

@@ -62,7 +62,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Functional2.cs" />
-    <Compile Include="Functional.cs" />
+    <Compile Include="FunctionalSimple.cs" />
+    <Compile Include="FunctionalSimpleTests.cs" />
     <Compile Include="Functional2Tests.cs" />
     <Compile Include="Spikes.cs" />
     <Compile Include="ObjectOriented.cs" />

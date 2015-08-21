@@ -108,6 +108,3 @@ namespace FunctionalDemoDave
         }
     }
 }
-
-// Dead code
-// Am keeping all of this so I don't forget!!!

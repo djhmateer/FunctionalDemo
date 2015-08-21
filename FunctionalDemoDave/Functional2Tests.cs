@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace FunctionalDemoDave
 {
     public class Functional2Tests
     {
-        // Testing the static functions which have no dependecies
+        // 1. Testing the static functions which have no dependecies
         [Fact]
         public void CreateDaveReportShouldReturnDaveDone()
         {
@@ -14,45 +15,61 @@ namespace FunctionalDemoDave
             Assert.Equal("dave done!", result);
         }
 
-        // Single function has 4 dependencies 
-        // mocking out the dependencies, and testing what this orchestration function
+        [Fact]
+        public void GetCustomersShouldReturnAListOf3Strings()
+        {
+            IList<string> result = Functional2.GetCustomers().ToList();
+            Assert.Equal(3, result.Count());
+            Assert.Equal("dave", result[0]);
+            Assert.Equal("bob", result[1]);
+            Assert.Equal("alice", result[2]);
+        }
+
+        // 2. Testing the main function - GetProcessing which has 4 dependencies 
+        // mocking out the dependencies, and testing what this main function
         // does to it's dependencies
         [Fact]
-        public void RunProcessingShouldSendCorrectEmailBody()
+        public void RunProcessingShouldGetCustomerEllieAndSendCorrectEmailBody()
         {
             // mocking out RunProcessing's 4 dependencies
             // Action is a delegate which doesn't return a value
-            // Passing in an anonymous function
-            Action<string> log = m => Console.WriteLine(m);
+            // Passing in an anonymous function which does nothing
+            Action<string> log = x => { };
 
-            // Func input of a string, delegating to anonymous function, returning ellie done!  
+            // Func input of a string, delegating to anonymous function,
+            // returning ellie done!  
             Func<string, string> createReport = x => "ellie done";
 
             // Func with no input, delegating to an anonymous function, 
             // returning an array of 1 string - ellie
-            Func<IEnumerable<string>> getCustomers = () => new[] { "ellie" };
+            IEnumerable<string> actualCustomers = new List<string>();
+            Func<IEnumerable<string>> getCustomers = () =>
+            {
+                var customers = new[] {"ellie"};
+                actualCustomers = customers;
+                return customers;
+            };
 
             // Action is a delegate - doesn't return anything
             // we're going to test whether RunProcessing calls createReport
             // which sets the body to "ellie done"
             var actualBody = "";
-            Action<string, string> sendEmail = (toAddress, body) =>
-            {
-                actualBody = body;
-            };
+            Action<string, string> sendEmail = (toAddress, body) => actualBody = body;
 
             // compose.  Action is a delegate - doesn't return anything
             Action runProcessing = () => Functional2.RunProcessing(log, getCustomers, createReport, sendEmail);
-            // run
             runProcessing();
-            // assert - testing if RunProcessing runs the sendEmail function properly
+
+            // Testing if RunProcessing getsCustomer
+            Assert.Equal("ellie", actualCustomers.ToList()[0]); 
+            // then runs the sendEmail function properly
             Assert.Equal("ellie done", actualBody);
         }
 
         [Fact]
         public void RunProcessingShouldLog()
         {
-            List<string> listOfLogEntries = new List<string>();
+            var listOfLogEntries = new List<string>();
             // Action is a delegate - doesn't return.  
             Action<string> log = m => listOfLogEntries.Add(m);
 
@@ -63,7 +80,7 @@ namespace FunctionalDemoDave
             // returning an array of 1 string
             Func<IEnumerable<string>> getCustomers = () => new[] { "ellie" };
 
-            Action<string, string> sendEmail = (toAddress, body) =>{};
+            Action<string, string> sendEmail = (toAddress, body) => { };
 
             Functional2.RunProcessing(log, getCustomers, createReport, sendEmail);
 
@@ -77,11 +94,11 @@ namespace FunctionalDemoDave
         [Fact]
         public void RunProcessingShouldSendMultipleCorrectEmailBodies()
         {
-            Action<string> log = m => Console.WriteLine(m);
+            Action<string> log = m => { };
             Func<string, string> createReport = customer => customer + " done";
             Func<IEnumerable<string>> getCustomers = () => new[] { "ellie", "bob" };
 
-            List<string> actualBodyList = new List<string>();
+            var actualBodyList = new List<string>();
             Action<string, string> sendEmail = (toAddress, body) => actualBodyList.Add(body);
 
             Functional2.RunProcessing(log, getCustomers, createReport, sendEmail);

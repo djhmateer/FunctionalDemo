@@ -43,6 +43,11 @@ namespace FunctionalDemo
             var expectedCustomer = new Customer("fist@sea.com");
             var expectedReportBody = "the report body";
 
+            // this is creating a closure, as if we are just creating a Function that returns a list of customers
+            // not acutally running it.  
+            // so when this goes out of scope (ie if we return IEnumerable<Customer> from Functional test
+            // will exptectedCustomer still be first@sea.com?? yes
+            // because the variable has been closed over.
             Func<IEnumerable<Customer>> getCustomersForCustomerReport  = 
                 () => new[] {expectedCustomer};
 

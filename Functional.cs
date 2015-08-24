@@ -14,6 +14,7 @@ namespace FunctionalDemo
 
         public static Action Compose()
         {
+            // creating a closure..
             return () => RunCustomerReportBatch(
                 GetCustomersForCustomerReport,
                 CreateCustomerReport,
@@ -46,7 +47,8 @@ namespace FunctionalDemo
 
         public static Report CreateCustomerReport(Customer customer)
         {
-            return new Report(customer.Email, $"This is the report for {customer.Email}!");
+            //return new Report(customer.Email, $"This is the report for {customer.Email}!");
+            return new Report(customer.Email, String.Format("This is the report for {0}!", customer.Email));
         }
 
         public static void SendEmail(string toAddress, string body)

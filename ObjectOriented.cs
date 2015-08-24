@@ -14,6 +14,8 @@ namespace FunctionalDemo
 
     public static class CompositionRoot
     {
+        // no state.. so don't need a 'class'
+        // no data structure.. 
         public static ReportingService Compose()
         {
             // Composition is usually far more complex
@@ -78,7 +80,8 @@ namespace FunctionalDemo
         public Report CreateCustomerReport(Customer customer)
         {
             // C#6 string interpolation
-            var body = $"This is the report for {customer.Email}!";
+            //var body = $"This is the report for {customer.Email}!";
+            string body = String.Format("This is the report for {0}!", customer.Email);
             return new Report(customer.Email, body);
         }
     }
@@ -93,8 +96,8 @@ namespace FunctionalDemo
         public void Send(string toAddress, string body)
         {
             // pretend to send an email here
-            //Console.Out.WriteLine("Sent Email to: {0}, Body: '{1}'", toAddress, body);
-            Console.WriteLine($"Sent Email to: {toAddress}, Body: '{body}'");
+            Console.Out.WriteLine("Sent Email to: {0}, Body: '{1}'", toAddress, body);
+            //Console.WriteLine($"Sent Email to: {toAddress}, Body: '{body}'");
         }
     }
 }

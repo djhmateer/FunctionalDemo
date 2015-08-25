@@ -39,21 +39,51 @@ namespace FunctionalDemoDave
             //Console.WriteLine(fn3(2));  //outputs 6
             //Console.WriteLine(fn3(3));  //outputs 9
 
-            Action a = GiveMeAction();
-            a(); // i = 1
-            a(); // i = 2
-            a();
+            //Action a = GiveMeAction();
+            //a(); // i = 1
+            //a(); // i = 2
+            //a();
+
+            // A delegate that accepts a string and returns a string
+            //Func<string, string> myFunc = delegate (string var1)
+            //{
+            //    return "some value";
+            //};
+
+            //string myVar = myFunc("something");
+            //Console.Out.WriteLine($"myVar is {myVar}");
+            var inc = GetAFunc();
+            Console.WriteLine(inc(5));
+            Console.WriteLine(inc(6));
+        }
+
+        // returns a function which takes a int and returns an int
+        public static Func<int, int> GetAFunc()
+        {
+            var myVar = 1;
+            Func<int, int> inc = delegate (int i)
+            {
+                myVar++;
+                return i + myVar;
+            };
+            return inc;
         }
 
         static Action GiveMeAction()
         {
+            Action ret = null;
             int i = 0;
-            Action a = delegate
+            ret += delegate
             {
-                i++;
+                Console.Out.WriteLine("First method " + i++);
             };
-            // Returning a method/function which captures the i scope (closure)
-            return a;
+
+            ret += delegate
+            {
+                Console.Out.WriteLine("Second method " + i++);
+            };
+            // Returning a chain of delegates
+            return ret;
         }
 
         static Func<int, int> GetMultiplier(int a)

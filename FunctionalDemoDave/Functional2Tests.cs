@@ -53,6 +53,8 @@ namespace FunctionalDemoDave
             // Action is a delegate - doesn't return anything
             // we're going to test whether RunProcessing calls createReport
             // which sets the body to "ellie done"
+
+            // actualBody is a clousre
             var actualBody = "";
             Action<string, string> sendEmail = (toAddress, body) => actualBody = body;
 
@@ -98,6 +100,7 @@ namespace FunctionalDemoDave
             Func<string, string> createReport = customer => customer + " done";
             Func<IEnumerable<string>> getCustomers = () => new[] { "ellie", "bob" };
 
+            // closure
             var actualBodyList = new List<string>();
             Action<string, string> sendEmail = (toAddress, body) => actualBodyList.Add(body);
 

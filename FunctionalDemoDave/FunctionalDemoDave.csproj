@@ -37,7 +37,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>FunctionalDemoDave.Functional2</StartupObject>
+    <StartupObject>FunctionalDemoDave.Closure</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -63,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Functional2.cs" />
+    <Compile Include="Closure.cs" />
     <Compile Include="FunctionalSimple.cs" />
     <Compile Include="FunctionalSimpleTests.cs" />
     <Compile Include="Functional2Tests.cs" />
